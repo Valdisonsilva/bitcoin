@@ -654,7 +654,7 @@ dnl Check for endianness
 AC_C_BIGENDIAN
 
 dnl Check for pthread compile/link requirements
-AX_PTHREAD
+AX_PTHREAD([CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"; LDFLAGS="$PTHREAD_LIBS $LDFLAGS"])
 
 dnl The following macro will add the necessary defines to bitcoin-config.h, but
 dnl they also need to be passed down to any subprojects. Pull the results out of
@@ -862,8 +862,6 @@ AC_LINK_IFELSE([AC_LANG_SOURCE([
 )
 
 if test "x$use_thread_local" = xyes || { test "x$use_thread_local" = xauto && test "x$use_glibc_compat" = xno; }; then
-  TEMP_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$TEMP_LDFLAGS $PTHREAD_CFLAGS"
   AC_MSG_CHECKING([for thread_local support])
   AC_LINK_IFELSE([AC_LANG_SOURCE([
     #include <thread>
@@ -897,7 +895,6 @@ if test "x$use_thread_local" = xyes || { test "x$use_thread_local" = xauto && te
       AC_MSG_RESULT(no)
     ]
   )
-  LDFLAGS="$TEMP_LDFLAGS"
 fi
 
 dnl check for gmtime_r(), fallback to gmtime_s() if that is unavailable
@@ -1676,6 +1673,6 @@ echo "  CFLAGS        = $CFLAGS"
 echo "  CPPFLAGS      = $DEBUG_CPPFLAGS $HARDENED_CPPFLAGS $CPPFLAGS"
 echo "  CXX           = $CXX"
 echo "  CXXFLAGS      = $DEBUG_CXXFLAGS $HARDENED_CXXFLAGS $WARN_CXXFLAGS $NOWARN_CXXFLAGS $ERROR_CXXFLAGS $GPROF_CXXFLAGS $CXXFLAGS"
-echo "  LDFLAGS       = $PTHREAD_CFLAGS $HARDENED_LDFLAGS $GPROF_LDFLAGS $LDFLAGS"
+echo "  LDFLAGS       = $HARDENED_LDFLAGS $GPROF_LDFLAGS $LDFLAGS"
 echo "  ARFLAGS       = $ARFLAGS"
 echo
