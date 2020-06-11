@@ -425,7 +425,7 @@ bool openBitcoinConf()
     fs::path pathConfig = GetConfigFile(gArgs.GetArg("-conf", BITCOIN_CONF_FILENAME));
 
     /* Create the file */
-    fsbridge::ofstream configFile(pathConfig, std::ios_base::app);
+    fsbridge::ofstream configFile(static_cast<std::filesystem::path>(pathConfig), std::ios_base::app);
 
     if (!configFile.good())
         return false;
@@ -585,7 +585,7 @@ fs::path static GetAutostartFilePath()
 
 bool GetStartOnSystemStartup()
 {
-    fsbridge::ifstream optionFile(GetAutostartFilePath());
+    fsbridge::ifstream optionFile(static_cast<std::filesystem::path>(GetAutostartFilePath()));
     if (!optionFile.good())
         return false;
     // Scan through file for "Hidden=true":

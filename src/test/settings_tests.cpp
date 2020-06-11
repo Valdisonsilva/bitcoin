@@ -37,7 +37,7 @@ inline std::ostream& operator<<(std::ostream& os, const std::pair<std::string, u
 inline void WriteText(const fs::path& path, const std::string& text)
 {
     fsbridge::ofstream file;
-    file.open(path);
+    file.open(static_cast<std::filesystem::path>(path));
     file << text;
 }
 

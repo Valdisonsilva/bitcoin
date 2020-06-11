@@ -26,7 +26,7 @@ bool DumpWallet(CWallet& wallet, bilingual_str& error)
         return false;
     }
     fsbridge::ofstream dump_file;
-    dump_file.open(path);
+    dump_file.open(static_cast<std::filesystem::path>(path));
     if (dump_file.fail()) {
         error = strprintf(_("Unable to open %s for writing"), fs::PathToString(path));
         return false;
@@ -120,7 +120,7 @@ bool CreateFromDump(const std::string& name, const fs::path& wallet_path, biling
         error = strprintf(_("Dump file %s does not exist."), fs::PathToString(dump_path));
         return false;
     }
-    fsbridge::ifstream dump_file(dump_path);
+    fsbridge::ifstream dump_file{static_cast<std::filesystem::path>(dump_path)};
 
     // Compute the checksum
     CHashWriter hasher(0, 0);

@@ -5,6 +5,7 @@
 #include <chain.h>
 #include <clientversion.h>
 #include <core_io.h>
+#include <fs.h>
 #include <interfaces/chain.h>
 #include <key_io.h>
 #include <merkleblock.h>
@@ -758,7 +759,7 @@ RPCHelpMan dumpwallet()
     }
 
     fsbridge::ofstream file;
-    file.open(filepath);
+    file.open(static_cast<std::filesystem::path>(filepath));
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
 

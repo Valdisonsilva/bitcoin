@@ -21,6 +21,7 @@
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/translation.h>
+#include <random.h>
 
 
 #if (defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__))
@@ -242,7 +243,7 @@ namespace {
 fs::path StripRedundantLastElementsOfPath(const fs::path& path)
 {
     auto result = path;
-    while (fs::PathToString(result.filename()) == ".") {
+    while (result.filename().empty() || fs::PathToString(result.filename()) == ".") {
         result = result.parent_path();
     }
 
@@ -402,7 +403,7 @@ const fs::path& ArgsManager::GetBlocksDirPath() const
     if (!path.empty()) return path;
 
     if (IsArgSet("-blocksdir")) {
-        path = fs::system_complete(fs::PathFromString(GetArg("-blocksdir", "")));
+        path = fs::absolute(fs::PathFromString(GetArg("-blocksdir", "")));
         if (!fs::is_directory(path)) {
             path = "";
             return path;
@@ -414,7 +415,6 @@ const fs::path& ArgsManager::GetBlocksDirPath() const
     path /= fs::PathFromString(BaseParams().DataDir());
     path /= "blocks";
     fs::create_directories(path);
-    path = StripRedundantLastElementsOfPath(path);
     return path;
 }
 
@@ -429,7 +429,7 @@ const fs::path& ArgsManager::GetDataDir(bool net_specific) const
 
     std::string datadir = GetArg("-datadir", "");
     if (!datadir.empty()) {
-        path = fs::system_complete(fs::PathFromString(datadir));
+        path = fs::absolute(fs::PathFromString(datadir));
         if (!fs::is_directory(path)) {
             path = "";
             return path;
@@ -809,7 +809,7 @@ fs::path GetDefaultDataDir()
 bool CheckDataDirOption()
 {
     std::string datadir = gArgs.GetArg("-datadir", "");
-    return datadir.empty() || fs::is_directory(fs::system_complete(fs::PathFromString(datadir)));
+    return datadir.empty() || fs::is_directory(fs::absolute(fs::PathFromString(datadir)));
 }
 
 fs::path GetConfigFile(const std::string& confPath)
@@ -900,7 +900,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
     }
 
     const std::string confPath = GetArg("-conf", BITCOIN_CONF_FILENAME);
-    fsbridge::ifstream stream(GetConfigFile(confPath));
+    fsbridge::ifstream stream{static_cast<std::filesystem::path>(GetConfigFile(confPath))};
 
     // not ok to have a config file specified that cannot be opened
     if (IsArgSet("-conf") && !stream.good()) {
@@ -947,7 +947,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
             const size_t default_includes = add_includes({});
 
             for (const std::string& conf_file_name : conf_file_names) {
-                fsbridge::ifstream conf_file_stream(GetConfigFile(conf_file_name));
+                fsbridge::ifstream conf_file_stream{static_cast<std::filesystem::path>(GetConfigFile(conf_file_name))};
                 if (conf_file_stream.good()) {
                     if (!ReadConfigStream(conf_file_stream, conf_file_name, error, ignore_invalid_keys)) {
                         return false;
@@ -1314,16 +1314,6 @@ void SetupEnvironment()
     // Set the default input/output charset is utf-8
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-#endif
-    // The path locale is lazy initialized and to avoid deinitialization errors
-    // in multithreading environments, it is set explicitly by the main thread.
-    // A dummy locale is used to extract the internal default locale, used by
-    // fs::path, which is then used to explicitly imbue the path.
-    std::locale loc = fs::path::imbue(std::locale::classic());
-#ifndef WIN32
-    fs::path::imbue(loc);
-#else
-    fs::path::imbue(std::locale(loc, new std::codecvt_utf8_utf16<wchar_t>()));
 #endif
 }
 
