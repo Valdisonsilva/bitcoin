@@ -137,7 +137,8 @@ chain for " target " development."))
 
 (define base-gcc
   (package-with-extra-patches gcc-8
-    (search-our-patches "gcc-8-sort-libtool-find-output.patch")))
+    (search-our-patches "gcc-8-sort-libtool-find-output.patch"
+                        "gcc-8-win-std-filesystem.patch")))
 
 ;; Building glibc with stack smashing protector first landed in glibc 2.25, use
 ;; this function to disable for older glibcs
@@ -167,14 +168,17 @@ desirable for building Bitcoin Core release binaries."
                         base-libc
                         base-gcc))
 
-(define (make-gcc-with-pthreads gcc)
-  (package-with-extra-configure-variable gcc "--enable-threads" "posix"))
+(define (make-gcc-with-pthreads-and-filesystem gcc)
+  (package-with-extra-configure-variable
+   (package-with-extra-configure-variable
+    gcc "--enable-libstdcxx-filesystem-ts" "yes")
+    "--enable-threads" "posix"))
 
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (make-binutils-with-mingw-w64-disable-flags (cross-binutils target)))
          (pthreads-xlibc mingw-w64-x86_64-winpthreads)
-         (pthreads-xgcc (make-gcc-with-pthreads
+         (pthreads-xgcc (make-gcc-with-pthreads-and-filesystem
                          (cross-gcc target
                                     #:xgcc (make-ssp-fixed-gcc base-gcc)
                                     #:xbinutils xbinutils
