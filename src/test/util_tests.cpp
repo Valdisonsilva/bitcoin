@@ -49,25 +49,27 @@ BOOST_FIXTURE_TEST_SUITE(util_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(util_datadir)
 {
+    const std::string sep{fs::path::preferred_separator};
+
     // Use local args variable instead of m_args to avoid making assumptions about test setup
     ArgsManager args;
     args.ForceSetArg("-datadir", fs::PathToString(m_path_root));
 
     const fs::path dd_norm = args.GetDataDirBase();
 
-    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + "/");
+    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + sep);
     args.ClearPathCache();
     BOOST_CHECK_EQUAL(dd_norm, args.GetDataDirBase());
 
-    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + "/.");
+    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + sep + ".");
     args.ClearPathCache();
     BOOST_CHECK_EQUAL(dd_norm, args.GetDataDirBase());
 
-    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + "/./");
+    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + sep + "." + sep);
     args.ClearPathCache();
     BOOST_CHECK_EQUAL(dd_norm, args.GetDataDirBase());
 
-    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + "/.//");
+    args.ForceSetArg("-datadir", fs::PathToString(dd_norm) + sep + "." + sep + sep);
     args.ClearPathCache();
     BOOST_CHECK_EQUAL(dd_norm, args.GetDataDirBase());
 }
