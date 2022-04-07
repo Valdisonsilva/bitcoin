@@ -36,7 +36,7 @@ if (NOT QT_BUILD_STANDALONE_TESTS)
 endif()
 set(QT_SUPERBUILD TRUE)
 
-set(QT_BUILD_SUBMODULES "qtbase;qttools;qttranslations" CACHE STRING "Submodules to build")
+set(QT_BUILD_SUBMODULES "qtbase;qttranslations" CACHE STRING "Submodules to build")
 
 foreach(module IN LISTS QT_BUILD_SUBMODULES)
     message(NOTICE "Configuring '${module}'")
