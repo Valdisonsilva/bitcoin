@@ -105,7 +105,7 @@ dnl Outputs: Sets variables for all qt-related tools.
 dnl Outputs: bitcoin_enable_qt, bitcoin_enable_qt_dbus, bitcoin_enable_qt_test
 AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   qt_version=">= $1"
-  qt_lib_prefix="Qt5"
+  qt_lib_prefix="Qt6"
   BITCOIN_QT_CHECK([_BITCOIN_QT_FIND_LIBS])
 
   dnl This is ugly and complicated. Yuck. Works as follows:
@@ -120,7 +120,7 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   CXXFLAGS="$PIC_FLAGS $CORE_CXXFLAGS $CXXFLAGS"
   _BITCOIN_QT_IS_STATIC
   if test "$bitcoin_cv_static_qt" = "yes"; then
-    _BITCOIN_QT_CHECK_STATIC_LIBS
+    dnl Not in Qt6 -- _BITCOIN_QT_CHECK_STATIC_LIBS
 
     if test "$qt_plugin_path" != ""; then
       if test -d "$qt_plugin_path/platforms"; then
@@ -372,12 +372,18 @@ dnl Outputs: All necessary QT_* variables are set.
 dnl Outputs: have_qt_test and have_qt_dbus are set (if applicable) to yes|no.
 AC_DEFUN([_BITCOIN_QT_FIND_LIBS],[
   BITCOIN_QT_CHECK([
-    PKG_CHECK_MODULES([QT_CORE], [${qt_lib_prefix}Core${qt_lib_suffix} $qt_version], [QT_INCLUDES="$QT_CORE_CFLAGS $QT_INCLUDES" QT_LIBS="$QT_CORE_LIBS $QT_LIBS"],
+    PKG_CHECK_MODULES([QT_CORE], [${qt_lib_prefix}Core${qt_lib_suffix} $qt_version], [],
                       [BITCOIN_QT_FAIL([${qt_lib_prefix}Core${qt_lib_suffix} $qt_version not found])])
+    QT_CORE_LIBS="$QT_CORE_LIBS -lm ${qt_lib_path}/libQt6BundledPcre2.a -ldl -lrt"
+    QT_INCLUDES="$QT_CORE_CFLAGS $QT_INCLUDES"
+    QT_LIBS="$QT_CORE_LIBS $QT_LIBS"
   ])
   BITCOIN_QT_CHECK([
-    PKG_CHECK_MODULES([QT_GUI], [${qt_lib_prefix}Gui${qt_lib_suffix} $qt_version], [QT_INCLUDES="$QT_GUI_CFLAGS $QT_INCLUDES" QT_LIBS="$QT_GUI_LIBS $QT_LIBS"],
+    PKG_CHECK_MODULES([QT_GUI], [${qt_lib_prefix}Gui${qt_lib_suffix} $qt_version], [],
                       [BITCOIN_QT_FAIL([${qt_lib_prefix}Gui${qt_lib_suffix} $qt_version not found])])
+    QT_GUI_LIBS="$QT_GUI_LIBS ${qt_lib_path}/libQt6BundledLibpng.a ${qt_lib_path}/libQt6BundledHarfbuzz.a ${qt_lib_path}/libfreetype.so ${qt_lib_path}/libfontconfig.so -lxkbcommon"
+    QT_INCLUDES="$QT_INCLUDES $QT_GUI_CFLAGS"
+    QT_LIBS="$QT_LIBS $QT_GUI_LIBS"
   ])
   BITCOIN_QT_CHECK([
     PKG_CHECK_MODULES([QT_WIDGETS], [${qt_lib_prefix}Widgets${qt_lib_suffix} $qt_version], [QT_INCLUDES="$QT_WIDGETS_CFLAGS $QT_INCLUDES" QT_LIBS="$QT_WIDGETS_LIBS $QT_LIBS"],
