@@ -105,7 +105,7 @@ dnl Outputs: Sets variables for all qt-related tools.
 dnl Outputs: bitcoin_enable_qt, bitcoin_enable_qt_dbus, bitcoin_enable_qt_test
 AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   qt_version=">= $1"
-  qt_lib_prefix="Qt5"
+  qt_lib_prefix="Qt6"
   BITCOIN_QT_CHECK([_BITCOIN_QT_FIND_LIBS])
 
   dnl This is ugly and complicated. Yuck. Works as follows:
@@ -120,7 +120,7 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   CXXFLAGS="$PIC_FLAGS $CORE_CXXFLAGS $CXXFLAGS"
   _BITCOIN_QT_IS_STATIC
   if test "$bitcoin_cv_static_qt" = "yes"; then
-    _BITCOIN_QT_CHECK_STATIC_LIBS
+    dnl Not in Qt6 -- _BITCOIN_QT_CHECK_STATIC_LIBS
 
     if test "$qt_plugin_path" != ""; then
       if test -d "$qt_plugin_path/platforms"; then
@@ -139,6 +139,10 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
 
     AC_DEFINE([QT_STATICPLUGIN], [1], [Define this symbol if qt plugins are static])
     if test "$TARGET_OS" != "android"; then
+      PKG_CHECK_MODULES([FONTCONFIG], [fontconfig], [QT_LIBS="$QT_LIBS $FONTCONFIG_LIBS"])
+      AX_CHECK_LINK_FLAG([-lQt6BundledHarfbuzz], [QT_LIBS="$QT_LIBS -lQt6BundledHarfbuzz"], [AC_MSG_ERROR([could not link against -lQt6BundledHarfbuzz])])
+      AX_CHECK_LINK_FLAG([-lQt6BundledLibpng], [QT_LIBS="$QT_LIBS -lQt6BundledLibpng"], [AC_MSG_ERROR([could not link against -lQt6BundledLibpng])])
+      AX_CHECK_LINK_FLAG([-lQt6BundledPcre2], [QT_LIBS="$QT_LIBS -lQt6BundledPcre2"], [AC_MSG_ERROR([could not link against -lQt6BundledPcre2])])
       _BITCOIN_QT_CHECK_STATIC_PLUGIN([QMinimalIntegrationPlugin], [-lqminimal])
       AC_DEFINE([QT_QPA_PLATFORM_MINIMAL], [1], [Define this symbol if the minimal qt platform exists])
     fi
