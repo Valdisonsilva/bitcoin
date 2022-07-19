@@ -151,7 +151,7 @@ chain for " target " development."))
                                        #:key
                                        (base-gcc-for-libc base-gcc)
                                        (base-kernel-headers base-linux-kernel-headers)
-                                       (base-libc (make-glibc-with-bind-now (make-glibc-without-werror glibc-2.24)))
+                                       (base-libc (make-glibc-with-bind-now (make-glibc-without-werror glibc-2.32)))
                                        (base-gcc (make-gcc-rpath-link (hardened-gcc base-gcc))))
   "Convenience wrapper around MAKE-CROSS-TOOLCHAIN with default values
 desirable for building Bitcoin Core release binaries."
@@ -603,13 +603,14 @@ inspecting signatures in Mach-O binaries.")
         xz
         ;; Build tools
         gnu-make
-        libtool-2.4.7
+        libtool
         autoconf-2.71
         automake
         pkg-config
         bison
         ;; Native GCC 10 toolchain
         gcc-toolchain-10
+        glibc-2.32
         (list gcc-toolchain-10 "static")
         ;; Scripting
         perl
