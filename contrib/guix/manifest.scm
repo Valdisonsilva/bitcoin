@@ -78,6 +78,11 @@ http://www.linuxfromscratch.org/hlfs/view/development/chapter05/gcc-pass1.html"
                  (("-rpath=") "-rpath-link="))
                #t))))))))
 
+;; https://gcc.gnu.org/install/configure.html
+(define (nonbootstrapped-gcc gcc)
+  (package-with-extra-configure-variable gcc
+    "--enable-bootstrap" "no"))
+
 (define (make-cross-toolchain target
                               base-gcc-for-libc
                               base-kernel-headers
