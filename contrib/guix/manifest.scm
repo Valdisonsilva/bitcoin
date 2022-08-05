@@ -113,10 +113,10 @@ http://www.linuxfromscratch.org/hlfs/view/development/chapter05/gcc-pass1.html"
                             xkernel))
          ;; 4. Build a cross-compiling gcc targeting XLIBC, derived from
          ;; BASE-GCC
-         (xgcc (cross-gcc target
+         (xgcc (nonbootstrapped-gcc (cross-gcc target
                           #:xgcc base-gcc
                           #:xbinutils xbinutils
-                          #:libc xlibc)))
+                          #:libc xlibc))))
     ;; Define a meta-package that propagates the resulting XBINUTILS, XLIBC, and
     ;; XGCC
     (package
