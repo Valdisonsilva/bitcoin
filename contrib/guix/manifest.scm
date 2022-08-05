@@ -92,9 +92,12 @@ http://www.linuxfromscratch.org/hlfs/view/development/chapter05/gcc-pass1.html"
   (let* ((xbinutils (cross-binutils target))
          ;; 1. Build a cross-compiling gcc without targeting any libc, derived
          ;; from BASE-GCC-FOR-LIBC
-         (xgcc-sans-libc (cross-gcc target
-                                    #:xgcc base-gcc-for-libc
-                                    #:xbinutils xbinutils))
+         (xgcc-sans-libc (nonbootstrapped-gcc
+                           (package-with-extra-patches
+                             (cross-gcc target
+                                        #:xgcc base-gcc-for-libc
+                                        #:xbinutils xbinutils)
+                             (search-our-patches "gcc-force-inhibitlibc.patch"))))
          ;; 2. Build cross-compiled kernel headers with XGCC-SANS-LIBC, derived
          ;; from BASE-KERNEL-HEADERS
          (xkernel (cross-kernel-headers target

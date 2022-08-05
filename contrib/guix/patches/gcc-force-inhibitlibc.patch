@@ -1,0 +1,14 @@
+This patch allows to build gcc-cross-sans-libc-aarch64-linux-gnu
+on a aarch64/arm64 builder.
+
+--- a/gcc/Makefile.in
++++ b/gcc/Makefile.in
+@@ -718,7 +718,7 @@ GGC_LIB=
+
+ # "true" if the target C library headers are unavailable; "false"
+ # otherwise.
+-inhibit_libc = @inhibit_libc@
++inhibit_libc = true
+ ifeq ($(inhibit_libc),true)
+ INHIBIT_LIBC_CFLAGS = -Dinhibit_libc
+ endif
