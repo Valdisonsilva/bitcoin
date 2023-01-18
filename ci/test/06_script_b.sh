@@ -75,7 +75,7 @@ if [ "${RUN_TIDY}" = "true" ]; then
           " -p . ${MAKEJOBS} -- -Xiwyu --error -Xiwyu --cxx17ns"\
           " -Xiwyu --mapping_file=${BASE_BUILD_DIR}/bitcoin-$HOST/contrib/devtools/iwyu/bitcoin.core.imp"\
           " > /tmp/iwyu.out"\
-  || ((export P_CI_DIR="${BASE_BUILD_DIR}/bitcoin-$HOST/src/" && CI_EXEC "python3 ${DIR_IWYU}/include-what-you-use/fix_includes.py --dry_run < /tmp/iwyu.out") && false)
+  || ( ( export P_CI_DIR="${BASE_BUILD_DIR}/bitcoin-$HOST/src/" && CI_EXEC "python3 ${DIR_IWYU}/include-what-you-use/fix_includes.py --dry_run --blank_lines < /tmp/iwyu.out") && false)
 fi
 
 if [ "$RUN_SECURITY_TESTS" = "true" ]; then
