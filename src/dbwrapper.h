@@ -22,7 +22,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <exception>
-#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
