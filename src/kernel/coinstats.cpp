@@ -21,6 +21,7 @@
 #include <util/overflow.h>
 #include <util/system.h>
 #include <validation.h>
+#include <version.h>
 
 #include <cassert>
 #include <iosfwd>
