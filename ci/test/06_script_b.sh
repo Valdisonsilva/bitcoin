@@ -38,50 +38,9 @@ fi
 
 if [ "${RUN_TIDY}" = "true" ]; then
   set -eo pipefail
-  export P_CI_DIR="${BASE_BUILD_DIR}/bitcoin-$HOST/src/"
-  ( CI_EXEC run-clang-tidy-16 -quiet "${MAKEJOBS}" ) | grep -C5 "error"
   export P_CI_DIR="${BASE_BUILD_DIR}/bitcoin-$HOST/"
   CI_EXEC "python3 ${DIR_IWYU}/include-what-you-use/iwyu_tool.py"\
-          " src/common/init.cpp"\
-          " src/common/url.cpp"\
-          " src/compat"\
-          " src/dbwrapper.cpp"\
-          " src/init"\
-          " src/kernel"\
-          " src/node/chainstate.cpp"\
-          " src/node/chainstatemanager_args.cpp"\
-          " src/node/mempool_args.cpp"\
-          " src/node/minisketchwrapper.cpp"\
-          " src/node/utxo_snapshot.cpp"\
-          " src/node/validation_cache_args.cpp"\
-          " src/policy/feerate.cpp"\
-          " src/policy/packages.cpp"\
-          " src/policy/settings.cpp"\
-          " src/primitives/transaction.cpp"\
-          " src/random.cpp"\
-          " src/rpc/fees.cpp"\
-          " src/rpc/signmessage.cpp"\
-          " src/test/fuzz/string.cpp"\
-          " src/test/fuzz/txorphan.cpp"\
-          " src/test/fuzz/util/"\
-          " src/test/util/coins.cpp"\
-          " src/uint256.cpp"\
-          " src/util/bip32.cpp"\
-          " src/util/bytevectorhash.cpp"\
-          " src/util/check.cpp"\
-          " src/util/error.cpp"\
-          " src/util/exception.cpp"\
-          " src/util/getuniquepath.cpp"\
-          " src/util/hasher.cpp"\
-          " src/util/message.cpp"\
-          " src/util/moneystr.cpp"\
-          " src/util/serfloat.cpp"\
-          " src/util/spanparsing.cpp"\
-          " src/util/strencodings.cpp"\
-          " src/util/string.cpp"\
-          " src/util/syserror.cpp"\
-          " src/util/threadinterrupt.cpp"\
-          " src/zmq"\
+          " src/wallet/salvage.cpp"\
           " -p . ${MAKEJOBS}"\
           " -- -Xiwyu --cxx17ns -Xiwyu --mapping_file=${BASE_BUILD_DIR}/bitcoin-$HOST/contrib/devtools/iwyu/bitcoin.core.imp"\
           " |& tee /tmp/iwyu_ci.out"

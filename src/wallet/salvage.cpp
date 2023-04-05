@@ -3,6 +3,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <wallet/salvage.h>
+
+#include <interfaces/chain.h>
 #include <streams.h>
 #include <util/fs.h>
 #include <util/translation.h>
