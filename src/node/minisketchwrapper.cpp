@@ -10,6 +10,8 @@
 #include <minisketch.h>
 
 #include <algorithm>
+#include <cassert>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <optional>

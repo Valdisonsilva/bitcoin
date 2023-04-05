@@ -7,9 +7,9 @@
 #include <crypto/sha256.h>
 #include <key.h>
 #include <logging.h>
-#include <pubkey.h>
 #include <random.h>
 
+#include <memory>
 #include <string>
 
 
