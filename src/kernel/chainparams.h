@@ -14,7 +14,6 @@
 #include <util/hash_type.h>
 
 #include <cstdint>
-#include <iterator>
 #include <map>
 #include <memory>
 #include <optional>

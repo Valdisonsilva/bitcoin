@@ -21,6 +21,7 @@
 #include <leveldb/slice.h>
 #include <leveldb/status.h>
 #include <leveldb/write_batch.h>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>

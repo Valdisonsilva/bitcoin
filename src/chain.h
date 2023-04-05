@@ -11,10 +11,15 @@
 #include <flatfile.h>
 #include <kernel/cs_main.h>
 #include <primitives/block.h>
+#include <serialize.h>
 #include <sync.h>
 #include <uint256.h>
 #include <util/time.h>
 
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <string>
 #include <vector>
 
 /**
