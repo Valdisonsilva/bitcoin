@@ -8,11 +8,12 @@
 #include <chain.h>
 #include <coins.h>
 #include <consensus/params.h>
+#include <dbwrapper.h>
 #include <logging.h>
 #include <node/blockstorage.h>
 #include <node/caches.h>
+#include <shutdown.h>
 #include <sync.h>
-#include <threadsafety.h>
 #include <tinyformat.h>
 #include <txdb.h>
 #include <uint256.h>
@@ -22,9 +23,8 @@
 #include <validation.h>
 
 #include <algorithm>
-#include <atomic>
 #include <cassert>
-#include <limits>
+#include <cstddef>
 #include <memory>
 #include <vector>
 

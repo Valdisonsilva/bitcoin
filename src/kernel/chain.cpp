@@ -4,6 +4,7 @@
 
 #include <chain.h>
 #include <interfaces/chain.h>
+#include <kernel/cs_main.h>
 #include <sync.h>
 #include <uint256.h>
 

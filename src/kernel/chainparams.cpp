@@ -5,12 +5,13 @@
 
 #include <kernel/chainparams.h>
 
+#include <chainparamsbase.h>
 #include <chainparamsseeds.h>
 #include <consensus/amount.h>
 #include <consensus/merkle.h>
 #include <consensus/params.h>
 #include <hash.h>
-#include <chainparamsbase.h>
+#include <iterator>
 #include <logging.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
@@ -23,7 +24,6 @@
 #include <cassert>
 #include <cstdint>
 #include <cstring>
-#include <type_traits>
 
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
