@@ -8,10 +8,11 @@
 
 #include <common/run_command.h>
 #include <util/string.h>
-#include <util/time.h>
 
 #include <tinyformat.h>
 #include <univalue.h>
+
+#include <cassert>
 
 #ifdef ENABLE_EXTERNAL_SIGNER
 #include <util/subprocess.hpp>
@@ -41,10 +42,9 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
     std::getline(stdout_stream, result);
     std::getline(stderr_stream, error);
 
-    while (c.poll() == -1) {
-        UninterruptibleSleep(100ms);
-    }
-
+#ifdef WIN32
+    assert(c.poll() != -1);
+#endif
     const int n_error = c.retcode();
     if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", Join(str_command, " "), n_error, error));
     if (!result_json.read(result)) throw std::runtime_error("Unable to parse JSON: " + result);
