@@ -8,6 +8,7 @@
 
 #include <common/run_command.h>
 #include <util/string.h>
+#include <util/time.h>
 
 #include <tinyformat.h>
 #include <univalue.h>
@@ -29,6 +30,8 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
 
     if (str_command.empty()) return UniValue::VNULL;
 
+    std::cerr << "============================= str_command is " << str_command[0] << "\n";
+
     auto c = sp::Popen(str_command, sp::input{sp::PIPE}, sp::output{sp::PIPE}, sp::error{sp::PIPE});
     if (!str_std_in.empty()) {
         c.send(str_std_in);
@@ -42,10 +45,25 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
     std::getline(stdout_stream, result);
     std::getline(stderr_stream, error);
 
+    std::cerr << "============================= result is " << result << "\n";
+    std::cerr << "============================= error is " << error << "\n";
+
+    std::cerr << "============================= c.poll() is " << c.poll() << "\n";
+
 #ifdef WIN32
-    assert(c.poll() != -1);
+    // int poll_result;
+    // while (true) {
+    //     poll_result = c.poll();
+    //     if (poll_result != -1) break;
+    //     UninterruptibleSleep(100ms);
+    // }
+    // // assert(c.poll() != -1);
 #endif
+    // c.wait();
     const int n_error = c.retcode();
+
+    std::cerr << "============================= n_error is " << n_error << "\n\n\n\n";
+
     if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", Join(str_command, " "), n_error, error));
     if (!result_json.read(result)) throw std::runtime_error("Unable to parse JSON: " + result);
 

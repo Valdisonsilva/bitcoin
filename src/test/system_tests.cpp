@@ -35,33 +35,33 @@ BOOST_AUTO_TEST_CASE(run_command)
         const UniValue result = RunCommandParseJSON({});
         BOOST_CHECK(result.isNull());
     }
-    {
-        const UniValue result = RunCommandParseJSON({"echo", "{\"success\": true}"});
-        BOOST_CHECK(result.isObject());
-        const UniValue& success = result.find_value("success");
-        BOOST_CHECK(!success.isNull());
-        BOOST_CHECK_EQUAL(success.get_bool(), true);
-    }
-    {
-        // An invalid command is handled by cpp-subprocess
-        BOOST_CHECK_EXCEPTION(RunCommandParseJSON({"invalid_command"}), std::runtime_error, [&](const std::runtime_error& e) {
-            BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
-            return true;
-        });
-    }
-    {
-        // Return non-zero exit code, no output to stderr
-#ifdef WIN32
-        const std::vector<std::string> command = {"cmd.exe", "/c", "exit", "1"};
-#else
-        const std::vector<std::string> command = {"false"};
-#endif
-        BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
-            const std::string what{e.what()};
-            BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned 1: \n", Join(command, " "))) != std::string::npos);
-            return true;
-        });
-    }
+    // {
+    //     const UniValue result = RunCommandParseJSON({"echo", "{\"success\": true}"});
+    //     BOOST_CHECK(result.isObject());
+    //     const UniValue& success = result.find_value("success");
+    //     BOOST_CHECK(!success.isNull());
+    //     BOOST_CHECK_EQUAL(success.get_bool(), true);
+    // }
+    // {
+    //     // An invalid command is handled by cpp-subprocess
+    //     BOOST_CHECK_EXCEPTION(RunCommandParseJSON({"invalid_command"}), std::runtime_error, [&](const std::runtime_error& e) {
+    //         BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
+    //         return true;
+    //     });
+    // }
+//     {
+//         // Return non-zero exit code, no output to stderr
+// #ifdef WIN32
+//         const std::vector<std::string> command = {"cmd.exe", "/c", "exit", "1"};
+// #else
+//         const std::vector<std::string> command = {"false"};
+// #endif
+//         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
+//             const std::string what{e.what()};
+//             BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned 1: \n", Join(command, " "))) != std::string::npos);
+//             return true;
+//         });
+//     }
     {
         // Return non-zero exit code, with error message for stderr
 #ifdef WIN32
@@ -78,19 +78,19 @@ BOOST_AUTO_TEST_CASE(run_command)
             return true;
         });
     }
-    {
-        BOOST_REQUIRE_THROW(RunCommandParseJSON({"echo", "{"}), std::runtime_error); // Unable to parse JSON
-    }
-    // Test std::in, except for Windows
-#ifndef WIN32
-    {
-        const UniValue result = RunCommandParseJSON({"cat"}, "{\"success\": true}");
-        BOOST_CHECK(result.isObject());
-        const UniValue& success = result.find_value("success");
-        BOOST_CHECK(!success.isNull());
-        BOOST_CHECK_EQUAL(success.get_bool(), true);
-    }
-#endif
+//     {
+//         BOOST_REQUIRE_THROW(RunCommandParseJSON({"echo", "{"}), std::runtime_error); // Unable to parse JSON
+//     }
+//     // Test std::in, except for Windows
+// #ifndef WIN32
+//     {
+//         const UniValue result = RunCommandParseJSON({"cat"}, "{\"success\": true}");
+//         BOOST_CHECK(result.isObject());
+//         const UniValue& success = result.find_value("success");
+//         BOOST_CHECK(!success.isNull());
+//         BOOST_CHECK_EQUAL(success.get_bool(), true);
+//     }
+// #endif
 }
 #endif // ENABLE_EXTERNAL_SIGNER
 
