@@ -49,10 +49,12 @@ BOOST_AUTO_TEST_CASE(run_command)
     }
     {
         // An invalid command is handled by cpp-subprocess
-        BOOST_CHECK_EXCEPTION(RunCommandParseJSON("invalid_command"), std::runtime_error, [&](const std::runtime_error& e) {
-            BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
-            return true;
-        });
+#ifdef WIN32
+        const std::string expected{"CreateProcessW failed : "};
+#else
+        const std::string expected{"execve failed : "};
+#endif
+        BOOST_CHECK_EXCEPTION(RunCommandParseJSON("invalid_command"), subprocess::CalledProcessError, HasReason(expected));
     }
     {
         // Return non-zero exit code, no output to stderr
