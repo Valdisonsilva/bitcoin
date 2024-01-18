@@ -392,6 +392,9 @@ jobs:
           # to avoid linker errors when using vcpkg in the manifest mode.
           # See: https://github.com/bitcoin/bitcoin/pull/28934
           Add-Content -Path "$env:VCPKG_ROOT\triplets\x64-windows-static.cmake" -Value "set(VCPKG_PLATFORM_TOOLSET_VERSION $env:VCToolsVersion)"
+          # Skip debug configuration to speed up build and minimize cache size.
+          Add-Content -Path "$env:VCPKG_ROOT\triplets\x64-windows.cmake" -Value "set(VCPKG_BUILD_TYPE release)"
+          Add-Content -Path "$env:VCPKG_ROOT\triplets\x64-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE release)"
 
       - name: Restore vcpkg binary cache
         uses: actions/cache/restore@v3
